@@ -83,6 +83,14 @@ class Game:
             pygame.time.wait(1)
     
     def update(self):
+        if pygame.key.get_pressed()[pygame.K_LEFT]:
+            self.center_x -= 5
+        if pygame.key.get_pressed()[pygame.K_RIGHT]:
+            self.center_x += 5
+        if pygame.key.get_pressed()[pygame.K_UP]:
+            self.center_y -= 5
+        if pygame.key.get_pressed()[pygame.K_DOWN]:
+            self.center_y += 5
         #mouse_x, mouse_y = pygame.mouse.get_pos()
         #loop around vertices in a circle
         #store intersection points from player to vertex
