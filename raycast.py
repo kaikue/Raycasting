@@ -91,10 +91,11 @@ class Game:
             self.center_y -= 5
         if pygame.key.get_pressed()[pygame.K_DOWN]:
             self.center_y += 5
-        #mouse_x, mouse_y = pygame.mouse.get_pos()
+        #make list of vertices
         #loop around vertices in a circle
-        #store intersection points from player to vertex
-        #draw triangles between each pair
+        #ignore vertex, raycast past it- first raycast? (need to pass corners)
+        #draw triangle between previous point and that one
+        #raycast to that vertex, or maybe that one should be first
         self.tris = []
         angle = 0
         start_pos = (self.center_x, self.center_y)
