@@ -3,27 +3,27 @@ Created on Apr 26, 2013
 
 @author: Kai
 '''
-import pygame, os, sys, math
+import os
+import sys
+import math
+import pygame
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
-RED = (255, 0, 0)
 BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0, 255)
-WHITE = (255, 255, 255, 255)
-BLACK = (0, 0, 0, 255)
-TRANSPARENT = (255, 0, 255)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
 class Game:
     def __init__(self):
         os.environ["SDL_VIDEO_CENTERED"] = "1"
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))#.convert_alpha()
-        pygame.display.set_caption("Hello Pygame")
+        pygame.display.set_caption("Raycast Demo")
         self.clock = pygame.time.Clock()
         self.horiz_scale = SCREEN_WIDTH / 5
         self.vert_scale = SCREEN_HEIGHT / 5
-        self.world = [[1, 0, 0, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0]]
+        self.world = [[1, 0, 1, 0, 0], [0, 0, 0, 1, 0], [1, 0, 0, 0, 1], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0]]
         self.build_lines()
         self.build_vertices()
         self.center_x = SCREEN_WIDTH / 2
@@ -94,9 +94,6 @@ class Game:
                         closest_intersection = intersection
             self.intersections.append(closest_intersection)
         self.intersections.sort(key=lambda k: k.angle)
-        for i in self.intersections:
-            print(i, end=" ")
-        print()
         self.render()
     
     def intersection(self, ray, segment, angle):
@@ -114,10 +111,11 @@ class Game:
         seg_mag = (seg_dx ** 2 + seg_dy ** 2) ** 0.5
         if ray_dx / ray_mag == seg_dx / seg_mag and ray_dy / ray_mag == seg_dy / seg_mag:
             return None
-        
-        T2 = (ray_dx * (seg_py - ray_py) + ray_dy * (ray_px - seg_px)) / (seg_dx * ray_dy - seg_dy * ray_dx)
-        T1 = (seg_px + seg_dx * T2 - ray_px) / ray_dx
-        
+        try:
+            T2 = (ray_dx * (seg_py - ray_py) + ray_dy * (ray_px - seg_px)) / (seg_dx * ray_dy - seg_dy * ray_dx)
+            T1 = (seg_px + seg_dx * T2 - ray_px) / ray_dx
+        except ZeroDivisionError:
+            return None
         if T1 < 0:
             return None
         if T2 < 0 or T2 > 1:
@@ -137,6 +135,7 @@ class Game:
             prev = nxt
         nxt = self.intersections[0]
         pygame.draw.polygon(self.screen, BLUE, ((self.center_x, self.center_y), (prev.x, prev.y), (nxt.x, nxt.y)))
+        pygame.draw.circle(self.screen, BLACK, (int(self.center_x), int(self.center_y)), 10)
         pygame.display.update()
 
 class Line(object):
